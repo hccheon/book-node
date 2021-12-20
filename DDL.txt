@@ -1,0 +1,28 @@
+-- mgbook.book definition
+
+
+
+CREATE TABLE `book` (
+`_id` int(11) NOT NULL AUTO_INCREMENT,
+`title` varchar(100) DEFAULT NULL,
+`author` varchar(100) DEFAULT NULL,
+`publisher` varchar(100) DEFAULT NULL,
+`isbn` varchar(100) DEFAULT NULL,
+`link` varchar(300) DEFAULT NULL COMMENT '책 링크',
+PRIMARY KEY (`_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+
+
+
+
+
+-- mgbook.`user` definition
+
+
+
+CREATE TABLE `user` (
+`_idx` int(11) NOT NULL AUTO_INCREMENT,
+`id` varchar(100) DEFAULT NULL,
+`password` varchar(100) DEFAULT NULL,
+PRIMARY KEY (`_idx`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
