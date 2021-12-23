@@ -6,6 +6,16 @@ const flash = require('connect-flash');
 var requestIp = require('request-ip');
 require('dotenv').config();
 
+//cors
+const cors = require('cors');
+let corsOptions = {
+    origin: '*',
+}
+
+
+
+
+
 const studyRouter  = require('./routes/book');
 const searchRouter  = require('./routes/search');
 
@@ -19,6 +29,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(process.env.NAVER_CLIENT_ID));
 app.use(cookieParser(process.env.NAVER_CLIENT_SECRET));
+
+app.use(cors(corsOptions));
+
 
 app.use(flash());
 app.use('/book', studyRouter); 

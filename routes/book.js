@@ -68,15 +68,15 @@ router.post('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=
             return;
         }else{
             //missing
-            if(valid.missingValidation(data)){
-                result = {
-                    code: 500,
-                    rows: 0,
-                    output: 'missing값을 확인하세요.'
-                }
-                res.send(result);
-                return;
-            }
+            // if(valid.missingValidation(data)){
+            //     result = {
+            //         code: 500,
+            //         rows: 0,
+            //         output: 'missing값을 확인하세요.'
+            //     }
+            //     res.send(result);
+            //     return;
+            // }
         }
 
         let out = await controller.book_create_book(data.title, data.author, data.publisher, data.isbn, data.link);
@@ -99,12 +99,48 @@ router.delete('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res
             return;
         }
 
-        if(valid.missingValidation(data)) { // 파라미터값이 null 일 경우
+        /* if(valid.missingValidation(data)) { // 파라미터값이 null 일 경우
             res.send(common.errorCode(msg.code.S003)); 
             return;
-        }
+        } */
 
         let out = await controller.book_delete_book(data.isbn);
+        res.send(out);
+        return;
+    }catch(err){
+        console.log({err:err});
+    }
+});
+
+//책 수정
+router.post('/modify', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+    console.log({req_body: req.body});
+    
+    try{
+        let data = req.body,
+            result = {};
+
+        if(
+            (data.title==undefined) || (data.author==undefined) || (data.publisher==undefined) ||
+            (data.isbn==undefined) || (data.link==undefined) || (data._id==undefined)   
+        ){
+            res.send(common.successCode(0,"파라미터를 확인해주세요."));
+            return;
+        }else{
+            //missing
+            // if(valid.missingValidation(data)){
+            //     result = {
+            //         code: 500,
+            //         rows: 0,
+            //         output: 'missing값을 확인하세요.'
+            //     }
+            //     res.send(result);
+            //     return;
+            // }
+        }
+
+        let out = await controller.book_modify_book(data.title, data.author, data.publisher, data.isbn, data.link, data._id);
+
         res.send(out);
         return;
     }catch(err){
