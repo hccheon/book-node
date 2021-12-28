@@ -1,0 +1,11 @@
+CREATE TABLE `lendreturn` (
+`_idlr` int(11) NOT NULL AUTO_INCREMENT,
+`book_id` int(11) NOT NULL,
+`gubun` varchar(2) NOT NULL,
+`stock` int(11) NOT NULL,
+`qty` int(11) NOT null DEFAULT 1,
+`datetime` datetime,
+`user` varchar(100) NOT null,
+PRIMARY KEY (`_idlr`),
+FOREIGN KEY (`book_id`) REFERENCES `book` (`_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;

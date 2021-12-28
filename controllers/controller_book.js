@@ -53,10 +53,11 @@ async function book_get_all() {
 async function book_get_by_type(type, value) {
     let pool = common.getPool();
     let connection = await pool.getConnection(async conn => conn);
-
+    value = "%"+value+"%";
     try {
         //존재하는 book_list인지 확인
-        let query = `SELECT * FROM book WHERE ${connection.escape(type).substring(1,type.length+2-1)} = ${connection.escape(value)};`;
+        //let query = `SELECT * FROM book WHERE ${connection.escape(type).substring(1,type.length+2-1)} = ${connection.escape(value)};`;
+        let query = `SELECT * FROM book WHERE ${connection.escape(type).substring(1,type.length+2-1)} like ${connection.escape(value)};`;
         console.log({query});
         let [book_list] = await connection.query(query);
 
@@ -77,7 +78,7 @@ async function book_get_by_type(type, value) {
 
 
 //책 추가
-async function book_create_book(title, author, publisher, isbn, link) {
+async function book_create_book(title, author, publisher, isbn, link, qty, library) {
     let pool = common.getPool();
     let connection = await pool.getConnection(async conn => conn)
    
@@ -95,8 +96,8 @@ async function book_create_book(title, author, publisher, isbn, link) {
         //----------------
         //책 추가하기 
 
-        query = `INSERT INTO book(title, author, publisher, isbn, link)
-                    VALUES(${connection.escape(title)}, ${connection.escape(author)}, ${connection.escape(publisher)}, ${connection.escape(isbn)}, ${connection.escape(link)});`;
+        query = `INSERT INTO book(title, author, publisher, isbn, link, qty, library)
+                    VALUES(${connection.escape(title)}, ${connection.escape(author)}, ${connection.escape(publisher)}, ${connection.escape(isbn)}, ${connection.escape(link)}, ${connection.escape(qty)}, ${connection.escape(library)});`;
         console.log(query);
         await connection.query(query);
         
@@ -119,7 +120,7 @@ async function book_create_book(title, author, publisher, isbn, link) {
 }
 
 //책 수정
-async function book_modify_book(title, author, publisher, isbn, link, id) {
+async function book_modify_book(title, author, publisher, isbn, link, id, qty, library) {
     let pool = common.getPool();
     let connection = await pool.getConnection(async conn => conn)
    
@@ -142,7 +143,9 @@ async function book_modify_book(title, author, publisher, isbn, link, id) {
                     author = ${connection.escape(author)}, 
                     publisher = ${connection.escape(publisher)}, 
                     isbn = ${connection.escape(isbn)}, 
-                    link = ${connection.escape(link)} 
+                    link = ${connection.escape(link)}, 
+                    qty = ${connection.escape(qty)}, 
+                    library = ${connection.escape(library)}
                 WHERE _id = ${connection.escape(id)}`;
         console.log(query);
         await connection.query(query);
@@ -191,6 +194,7 @@ async function book_delete_book(isbn) {
         connection.release();
     }
 }
+
 
 
 

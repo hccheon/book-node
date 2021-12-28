@@ -79,7 +79,7 @@ router.post('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=
             // }
         }
 
-        let out = await controller.book_create_book(data.title, data.author, data.publisher, data.isbn, data.link);
+        let out = await controller.book_create_book(data.title, data.author, data.publisher, data.isbn, data.link, data.qty, data.library);
 
         res.send(out);
         return;
@@ -139,7 +139,7 @@ router.post('/modify', common.ipfilter(common.ips, {mode: 'allow'}), async (req,
             // }
         }
 
-        let out = await controller.book_modify_book(data.title, data.author, data.publisher, data.isbn, data.link, data._id);
+        let out = await controller.book_modify_book(data.title, data.author, data.publisher, data.isbn, data.link, data._id, data.qty, data.library);
 
         res.send(out);
         return;
