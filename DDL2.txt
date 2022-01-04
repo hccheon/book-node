@@ -7,5 +7,61 @@ CREATE TABLE `lendreturn` (
 `datetime` datetime,
 `user` varchar(100) NOT null,
 PRIMARY KEY (`_idlr`),
+FOREIGN KEY (`book_id`) REFERENCES `book` (`_id`),
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+
+
+
+
+CREATE TABLE `lend` (
+`_id` int(11) NOT NULL AUTO_INCREMENT,
+`book_id` int(11) NOT NULL,
+`stock_id` int(11) NOT NULL,
+`qty` int(11) NOT null DEFAULT 1,
+`datetime` datetime,
+`user` varchar(100) NOT null,
+PRIMARY KEY (`_id`),
+FOREIGN KEY (`book_id`) REFERENCES `book` (`_id`),
+FOREIGN KEY (`stock_id`) REFERENCES `stock` (`_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE `return` (
+`_id` int(11) NOT NULL AUTO_INCREMENT,
+`lend_id` int(11) NOT NULL,
+`book_id` int(11) NOT NULL,
+`stock_id` int(11) NOT NULL,
+`qty` int(11) NOT null DEFAULT 1,
+`datetime` datetime,
+`user` varchar(100) NOT null,
+PRIMARY KEY (`_id`),
+FOREIGN KEY (`book_id`) REFERENCES `book` (`_id`),
+FOREIGN KEY (`lend_id`) REFERENCES `lend` (`_id`),
+FOREIGN KEY (`stock_id`) REFERENCES `stock` (`_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+
+
+
+CREATE TABLE `stock` (
+`_id` int(11) NOT NULL AUTO_INCREMENT,
+`book_id` int(11) NOT NULL,
+`lend_id` int(11),
+`return_id` int(11),
+`t_qty` int(11),
+`c_qty` int(11),
+`qty` int(11) NOT null,
+`type` varchar(100) NOT null,
+`datetime` datetime,
+`user` varchar(100) NOT null,
+PRIMARY KEY (`_id`),
 FOREIGN KEY (`book_id`) REFERENCES `book` (`_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO stock(book_id, t_qty, c_qty, qty, type, datetime, user)
+                    VALUES(104, 1, 1, 1, 'Add', now(), '테스터');
+
+SELECT _id, title, author, publisher, isbn, link, library,
+                (SELECT t_qty FROM stock WHERE book_id = 111 ) t_qty,
+                (SELECT C_qty FROM stock WHERE book_id = 111 ) c_qty
+                FROM book WHERE _id = 111;

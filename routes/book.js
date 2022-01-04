@@ -31,7 +31,7 @@ router.get('/:type/:value', common.ipfilter(common.ips, {mode: 'allow'}), async 
         var value = req.params.value;
         var chk_params_ok = false;
 
-        if( ((type=="isbn") || (type=='title') || (type=='author') || (type=='publisher'))){
+        if( ((type=="isbn") || (type=='title') || (type=='author') || (type=='publisher') || (type=='id'))){
             chk_params_ok = true;
         }
         if(!chk_params_ok){
@@ -52,9 +52,79 @@ router.get('/:type/:value', common.ipfilter(common.ips, {mode: 'allow'}), async 
     }
 });
 
+//책 id 검색
+router.post('/id', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+    //console.log({req_body: req.body});
+    
+    try{
+        let data = req.body,
+            result = {};
+
+        if(
+            (data.id==undefined) 
+        ){
+            res.send(common.successCode(0,"파라미터를 확인해주세요."));
+            return;
+        }else{
+            //missing
+            // if(valid.missingValidation(data)){
+            //     result = {
+            //         code: 500,
+            //         rows: 0,
+            //         output: 'missing값을 확인하세요.'
+            //     }
+            //     res.send(result);
+            //     return;
+            // }
+        }
+
+        let out = await controller.book_get_by_id(data.id);
+
+        res.send(out);
+        return;
+    }catch(err){
+        console.log({err:err});
+    }
+});
+
+//책 user 검색
+router.post('/userbook', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+    //console.log({req_body: req.body});
+    
+    try{
+        let data = req.body,
+            result = {};
+        console.log(data);
+        if(
+            (data.user==undefined) 
+        ){
+            res.send(common.successCode(0,"파라미터를 확인해주세요."));
+            return;
+        }else{
+            //missing
+            // if(valid.missingValidation(data)){
+            //     result = {
+            //         code: 500,
+            //         rows: 0,
+            //         output: 'missing값을 확인하세요.'
+            //     }
+            //     res.send(result);
+            //     return;
+            // }
+        }
+
+        let out = await controller.book_get_by_user(data.user);
+
+        res.send(out);
+        return;
+    }catch(err){
+        console.log({err:err});
+    }
+});
+
 //책 추가
 router.post('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
-    console.log({req_body: req.body});
+    //console.log({req_body: req.body});
     
     try{
         let data = req.body,
@@ -89,12 +159,36 @@ router.post('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=
 });
 
 //책 삭제(with isbn)
-router.delete('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+/* router.deleteIsbn('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
     console.log({req_body: req.body});
     try{
         let data = req.body;
 
         if(data.isbn == undefined || data.isbn =="") { // 파라미터값이 undefined 경우
+            res.send(common.errorCode(msg.code.S002)); 
+            return;
+        } */
+
+        /* if(valid.missingValidation(data)) { // 파라미터값이 null 일 경우
+            res.send(common.errorCode(msg.code.S003)); 
+            return;
+        } */
+
+/*         let out = await controller.book_delete_book(data.isbn);
+        res.send(out);
+        return;
+    }catch(err){
+        console.log({err:err});
+    }
+}); */
+
+//책 삭제(with id)
+router.delete('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+    console.log({req_body: req.body});
+    try{
+        let data = req.body;
+
+        if(data.id == undefined || data.id =="") { // 파라미터값이 undefined 경우
             res.send(common.errorCode(msg.code.S002)); 
             return;
         }
@@ -104,7 +198,7 @@ router.delete('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res
             return;
         } */
 
-        let out = await controller.book_delete_book(data.isbn);
+        let out = await controller.book_delete_book(data.id);
         res.send(out);
         return;
     }catch(err){
@@ -114,7 +208,7 @@ router.delete('/', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res
 
 //책 수정
 router.post('/modify', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
-    console.log({req_body: req.body});
+    //console.log({req_body: req.body});
     
     try{
         let data = req.body,
@@ -143,6 +237,63 @@ router.post('/modify', common.ipfilter(common.ips, {mode: 'allow'}), async (req,
 
         res.send(out);
         return;
+    }catch(err){
+        console.log({err:err});
+    }
+});
+
+//책 대출(with id)
+router.post('/lend', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+    console.log({req_body: req.body});
+    try{
+        let data = req.body;
+
+        if(data.id == undefined || data.id =="") { // 파라미터값이 undefined 경우
+            res.send(common.errorCode(msg.code.S002)); 
+            return;
+        }
+
+        /* if(valid.missingValidation(data)) { // 파라미터값이 null 일 경우
+            res.send(common.errorCode(msg.code.S003)); 
+            return;
+        } */
+
+        let out = await controller.book_lend_book(data.id, data.qty);
+        res.send(out);
+        return;
+    }catch(err){
+        console.log({err:err});
+    }
+});
+
+//책 반납(with id)
+router.post('/return', common.ipfilter(common.ips, {mode: 'allow'}), async (req, res)=>{
+    console.log({req_body: req.body});
+    try{
+        let data = req.body;
+        if(data.id == undefined || data.id =="") { // 파라미터값이 undefined 경우
+            res.send(common.errorCode(msg.code.S002)); 
+            return;
+        }
+        
+        let out = await controller.book_return_book(data.id, data.qty);
+        res.send(out);
+        return;
+        /* let data = req.body;
+
+        if(data.id == undefined || data.id =="") { // 파라미터값이 undefined 경우
+            res.send(common.errorCode(msg.code.S002)); 
+            return;
+        } */
+
+        /* if(valid.missingValidation(data)) { // 파라미터값이 null 일 경우
+            res.send(common.errorCode(msg.code.S003)); 
+            return;
+        } */
+
+        /* let out = await controller.book_return_book(data.id, data.qty);
+        res.send(out);
+        return; */
     }catch(err){
         console.log({err:err});
     }
@@ -196,4 +347,9 @@ router.post('/getStudiesOfInvestigator', common.ipfilter(common.ips, {mode: 'all
     }
 });
 
+
+
 module.exports = router;
+
+
+

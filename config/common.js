@@ -9,7 +9,7 @@ var config = JSON.parse(dataJSON);
 
 // IP 주소 기반 접근 제어
 var ipfilter = require('express-ipfilter').IpFilter;
-var ips=['::ffff:*', '::1','::ffff:127.0.0.1'];
+var ips=['::ffff:*', '::1','::ffff:127.0.0.1', '::ffff:203.254.143.87','::ffff:61.99.5.17'];
 
 //개발자용 db정보
 config = config.development2;
